@@ -125,7 +125,9 @@ class TnaBaseDateField(TnaFieldMixin, forms.Field):
 
         values = trim_progressive_values(values, self.progressive)
 
-        codes = self.field_codes[: len(values)] if self.progressive else self.field_codes
+        codes = (
+            self.field_codes[: len(values)] if self.progressive else self.field_codes
+        )
         if len(values) != len(codes) or any(not item for item in values):
             raise ValidationError(self.invalid_date_error_message)
 

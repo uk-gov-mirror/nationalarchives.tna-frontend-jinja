@@ -10,8 +10,7 @@ class TnaDateInputWidget(forms.MultiWidget):
         self.field_codes = tuple(field_codes)
         self.progressive = progressive
         widgets = [
-            forms.TextInput(attrs={"inputmode": "numeric"})
-            for _ in self.field_codes
+            forms.TextInput(attrs={"inputmode": "numeric"}) for _ in self.field_codes
         ]
         super().__init__(widgets, attrs)
 
@@ -32,8 +31,7 @@ class TnaDateInputWidget(forms.MultiWidget):
 
     def value_from_datadict(self, data, files, name):
         values = [
-            data.get(f"{name}-{date_input_part(code)}", "")
-            for code in self.field_codes
+            data.get(f"{name}-{date_input_part(code)}", "") for code in self.field_codes
         ]
 
         return trim_progressive_values(values, self.progressive)
