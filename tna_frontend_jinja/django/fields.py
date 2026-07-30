@@ -4,7 +4,7 @@ import datetime
 from django import forms
 from django.core.exceptions import ValidationError
 
-from ._shared import DATE_INPUT_PARTS, trim_progressive_values
+from .helpers import DATE_INPUT_PARTS, trim_progressive_values
 from .widgets import TnaDateInputWidget
 
 

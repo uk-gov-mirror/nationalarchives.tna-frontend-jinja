@@ -2,7 +2,7 @@ import datetime
 
 from django import forms
 
-from ._shared import date_input_part, trim_progressive_values
+from .helpers import date_input_part, trim_progressive_values
 
 
 class TnaDateInputWidget(forms.MultiWidget):
