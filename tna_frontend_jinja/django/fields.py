@@ -25,7 +25,7 @@ def _month_format(value):
 def _parse_date_parts(values, codes, allow_two_digit_year):
     formats = []
 
-    for code, value in zip(codes, values):
+    for code, value in zip(codes, values, strict=False):
         if code == "d":
             formats.append("%d")
         elif code == "m":

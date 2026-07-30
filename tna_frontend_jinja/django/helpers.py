@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-
 DATE_INPUT_PARTS = {
     "d": "day",
     "m": "month",
@@ -213,7 +212,7 @@ def django_date_input_params(field):
         raw_values = widget.decompress(field.value())
 
     values = {}
-    for code, value in zip(field.field.field_codes, raw_values):
+    for code, value in zip(field.field.field_codes, raw_values, strict=False):
         if value:
             values[date_input_part(code)] = value
 
