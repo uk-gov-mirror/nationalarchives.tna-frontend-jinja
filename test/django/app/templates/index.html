@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Django example app</h1>
+  <ul>
+    {% for link in links %}
+      <li><a href="{{ link.href }}">{{ link.text }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

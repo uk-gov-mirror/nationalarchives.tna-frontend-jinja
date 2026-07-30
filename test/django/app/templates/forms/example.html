@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{%- from 'components/button/macro.html' import tnaButton -%}
+{%- from 'components/error-summary/macro.html' import tnaErrorSummary -%}
+
+{% block title %}Example form{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+    {{ tnaErrorSummary(django_field_errors(form)) }}
+  {% endif %}
+
+  <h1>Example form</h1>
+
+  {% if success %}
+    <p>Form submitted successfully.</p>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {{ form.username.as_field_group() }}
+    {{ form.email.as_field_group() }}
+    {{ form.biography.as_field_group() }}
+    {{ form.contact_method.as_field_group() }}
+    {{ form.topics.as_field_group() }}
+    {{ form.category.as_field_group() }}
+    {{ form.agreed.as_field_group() }}
+    {{ form.attachment.as_field_group() }}
+    {{ form.date_of_birth.as_field_group() }}
+    {{ form.month_of_birth.as_field_group() }}
+    {{ form.year_of_birth.as_field_group() }}
+    {{ form.approximate_date.as_field_group() }}
+
+    {{ tnaButton({'text': 'Submit'}) }}
+  </form>
+{% endblock %}
