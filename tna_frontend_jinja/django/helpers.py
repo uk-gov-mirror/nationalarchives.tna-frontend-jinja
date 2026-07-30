@@ -184,6 +184,31 @@ def django_file_input_params(field):
     return _merge_field_params(field, params)
 
 
+def django_date_input_params(field):
+    params = _base_params(field)
+    widget = field.field.widget
+
+    if field.form.is_bound:
+        raw_values = widget.value_from_datadict(
+            field.form.data,
+            field.form.files,
+            field.html_name,
+        )
+    else:
+        raw_values = widget.decompress(field.value())
+
+    values = {}
+    for code, value in zip(field.field.field_codes, raw_values):
+        if value:
+            values[date_input_part(code)] = value
+
+    params["value"] = values
+    params["fields"] = list(field.field.field_codes)
+    params["progressive"] = field.field.progressive
+
+    return _merge_field_params(field, params)
+
+
 def django_field_errors(form, params=None):
     summary_params = {
         "title": "There is a problem",
@@ -225,6 +250,7 @@ class DjangoFormsHelpers:
             {
                 "django_checkbox_params": django_checkbox_params,
                 "django_checkboxes_params": django_checkboxes_params,
+                "django_date_input_params": django_date_input_params,
                 "django_field_errors": django_field_errors,
                 "django_file_input_params": django_file_input_params,
                 "django_radios_params": django_radios_params,
