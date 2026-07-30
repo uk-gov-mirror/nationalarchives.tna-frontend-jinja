@@ -25,6 +25,7 @@ dependencies = [
   "Jinja2>=3"
 ]
 [project.optional-dependencies]
+django = ["Django>=5.2"]
 wtforms = ["Flask-WTF[email]"]
 
 [project.urls]

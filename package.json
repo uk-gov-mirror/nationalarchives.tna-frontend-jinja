@@ -1,7 +1,9 @@
 {
   "scripts": {
     "test:fixtures": "node test/test-fixtures.mjs",
-    "test:playwright": "npx playwright install && playwright test --ui"
+    "test:playwright": "npx playwright install && playwright test --ui",
+    "test:django:python": "docker compose exec django python test/django/app/manage.py test",
+    "test:django:playwright": "npx playwright install && TEST_DOMAIN=http://127.0.0.1:8001 playwright test --ui -g @django"
   },
   "dependencies": {
     "@nationalarchives/frontend": "1.0.0"
