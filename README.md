@@ -151,21 +151,6 @@ npm run test:playwright
 docker compose exec app poetry run python -m pytest
 ```
 
-### Django consumer app checks
-
-```sh
-# Start the Django consumer app
-docker compose up -d django
-
-# The app is available at http://127.0.0.1:8011/
-
-# Run Django unit tests
-npm run test:django:python
-
-# Run Django Playwright smoke tests
-npm run test:django:playwright
-```
-
 ## Styles and JavaScript
 
 The CSS and JavaScript are not included in the PyPI package. You must install them separately.
