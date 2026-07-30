@@ -9,10 +9,18 @@ ALLOWED_HOSTS = ["*"]
 ROOT_URLCONF = "app.urls"
 
 INSTALLED_APPS = [
+    "app",
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "django.forms",
 ]
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 MIDDLEWARE = []
 

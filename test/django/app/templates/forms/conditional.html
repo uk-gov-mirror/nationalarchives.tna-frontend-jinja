@@ -16,12 +16,10 @@
   {% endif %}
 
   <form method="post">
-    {% csrf_token %}
-
     {{ form.contact_method.as_field_group() }}
     {{ form.email.as_field_group() }}
     {{ form.phone.as_field_group() }}
 
-    {{ tnaButton({'text': 'Submit'}) }}
+    {{ tnaButton({'text': 'Submit', 'buttonElement': True, 'buttonType': 'submit'}) }}
   </form>
 {% endblock %}

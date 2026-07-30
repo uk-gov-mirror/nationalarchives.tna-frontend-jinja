@@ -28,7 +28,7 @@ services:
       context: .
       dockerfile: test/django/Dockerfile
     ports:
-      - 8001:8000
+      - 8011:8000
     volumes:
       - ./test/django/app:/app/test/django/app
       - ./tna_frontend_jinja:/app/tna_frontend_jinja

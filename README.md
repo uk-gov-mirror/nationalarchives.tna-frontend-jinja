@@ -157,6 +157,8 @@ docker compose exec app poetry run python -m pytest
 # Start the Django consumer app
 docker compose up -d django
 
+# The app is available at http://127.0.0.1:8011/
+
 # Run Django unit tests
 npm run test:django:python
 

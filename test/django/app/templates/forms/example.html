@@ -16,8 +16,6 @@
   {% endif %}
 
   <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
     {{ form.username.as_field_group() }}
     {{ form.email.as_field_group() }}
     {{ form.biography.as_field_group() }}
@@ -31,6 +29,6 @@
     {{ form.year_of_birth.as_field_group() }}
     {{ form.approximate_date.as_field_group() }}
 
-    {{ tnaButton({'text': 'Submit'}) }}
+    {{ tnaButton({'text': 'Submit', 'buttonElement': True, 'buttonType': 'submit'}) }}
   </form>
 {% endblock %}
