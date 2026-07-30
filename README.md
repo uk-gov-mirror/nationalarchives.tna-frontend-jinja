@@ -135,7 +135,7 @@ See the [TNA Frontend Jinja Django forms docs](https://nationalarchives.github.i
 ## Running tests
 
 ```sh
-# Start the test server
+# Start the Flask test server
 docker compose up -d
 
 # Install the dependencies
@@ -149,6 +149,19 @@ npm run test:playwright
 
 # Run the Python tests
 docker compose exec app poetry run python -m pytest
+```
+
+### Django consumer app checks
+
+```sh
+# Start the Django consumer app
+docker compose up -d django
+
+# Run Django unit tests
+npm run test:django:python
+
+# Run Django Playwright smoke tests
+npm run test:django:playwright
 ```
 
 ## Styles and JavaScript
