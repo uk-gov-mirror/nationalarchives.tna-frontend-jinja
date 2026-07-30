@@ -12,7 +12,6 @@ A minimal reference application is included in `test/django` to show the expecte
 
 - Jinja template support is built in.
 - Starter Django fields and helpers are included in the package.
-- The Django support is intentionally narrower than the WTForms support.
 
 ## 0. Installation
 
@@ -74,9 +73,9 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 ## 2. Render full components at the field level
 
-For Django forms, the most effective approach is to render complete TNA components from field templates using the `BoundField` context.
+Render complete TNA components from field templates using the `BoundField` context.
 
-This is usually a better fit than overriding widget templates directly because TNA components often need access to:
+TNA components often need access to:
 
 - the label
 - the hint text
@@ -166,7 +165,26 @@ class ContactForm(forms.Form):
   )
 ```
 
-## 5. Render fields with `as_field_group()`
+## 5. Views and routing
+
+Use a view to instantiate the form, handle `POST`, and render the template in the GET or invalid state.
+
+```py
+from django.shortcuts import redirect, render
+
+
+def contact_view(request):
+  form = ContactForm(request.POST or None, request.FILES or None)
+
+  if request.method == "POST" and form.is_valid():
+    return redirect("success")
+
+  return render(request, "forms/contact.html", {"form": form})
+```
+
+This is the Django equivalent of the Flask routing section in the WTForms guide.
+
+## 6. Templates
 
 Each packaged field sets a `template_name`, so you can render it with Django's field-group rendering.
 
@@ -186,7 +204,7 @@ Each packaged field sets a `template_name`, so you can render it with Django's f
 </form>
 ```
 
-## 6. Build custom field templates when you need them
+## 7. Build custom field templates when you need them
 
 Each field template receives `field` in its context. `field` is a Django `BoundField`.
 
@@ -218,7 +236,7 @@ Example radios template:
 
 The packaged templates use these helper functions internally. Override them only when you need custom behaviour.
 
-## 7. Add a form-level error summary
+## 8. Add a form-level error summary
 
 The package includes a `django_field_errors()` helper for building error-summary items from a Django form.
 
@@ -230,7 +248,7 @@ The package includes a `django_field_errors()` helper for building error-summary
 {% endif %}
 ```
 
-## 8. Handle conditional validation in the form class
+## 9. Handle conditional validation in the form class
 
 Conditional validation is usually best handled in `clean()`.
 
@@ -262,40 +280,6 @@ class ContactPreferenceForm(forms.Form):
     return cleaned_data
 ```
 
-## 9. Included package structure
-
-The shipped Django support is organised like this:
-
-```text
-tna_frontend_jinja/
-  django/
-    __init__.py
-    fields.py
-    forms.py
-    helpers.py
-    widgets.py
-  templates/
-    django/
-      forms/
-        fields/
-          checkbox.html
-          checkboxes.html
-          date-input.html
-          file-input.html
-          radios.html
-          select.html
-          text-input.html
-          textarea.html
-```
-
-Responsibilities:
-
-- `fields.py`: reusable field subclasses with `template_name` defaults
-- `forms.py`: optional base form with shared conventions
-- `helpers.py`: error-summary helpers and attribute mapping helpers
-- `widgets.py`: date widget handling for multi-part date inputs
-- `templates/`: Jinja field templates that call TNA macros
-
 ## 10. Supported starter field mapping
 
 | Packaged field | Django widget | TNA component template |
@@ -314,139 +298,3 @@ Responsibilities:
 | `TnaProgressiveDateField` | custom `MultiWidget` | `date-input` |
 
 These date fields follow the same high-level behaviour as the WTForms variants: full date, month/year, year only, and progressive partial date input.
-
-## 11. Example app
-
-A minimal Django 5.2+ example application is included at `test/django`.
-
-Useful entry points:
-
-- `test/django/app/app/settings.py`
-- `test/django/app/app/jinja2.py`
-- `test/django/app/app/forms.py`
-- `test/django/app/app/urls.py`
-- `test/django/app/templates/forms/example.html`
-- `test/django/app/templates/forms/conditional.html`
-
-## 12. How It Works
-
-The implementation runs as a short pipeline from Django form binding to TNA macro rendering.
-
-### 12.1. Public API import
-
-Applications import the packaged fields and helpers from `tna_frontend_jinja.django`.
-
-That module re-exports the field classes, helper registration object, and optional form mixin so consumers do not need to import from internal package modules directly.
-
-### 12.2. Jinja environment registration
-
-When the Django Jinja environment is created, call `DjangoFormsHelpers(env)`.
-
-This registers the helper functions used by the field templates, including:
-
-- `django_text_input_params`
-- `django_radios_params`
-- `django_select_params`
-- `django_checkbox_params`
-- `django_checkboxes_params`
-- `django_file_input_params`
-- `django_date_input_params`
-- `django_field_errors`
-
-These functions are added as Jinja globals and are later called from the packaged field templates.
-
-### 12.3. Form declaration
-
-Application forms declare fields using classes such as `TnaCharField`, `TnaRadioField`, or `TnaDateField`.
-
-Each of these field classes primarily does two things:
-
-- sets a `template_name` that Django will use when rendering the bound field as a field group
-- optionally stores `tna_params` so component options can be merged in later
-
-For standard one-input fields, the field class is thin. For date fields, `TnaBaseDateField` also configures a custom `MultiWidget` and parses multipart input back into a Python `date`.
-
-### 12.4. Request binding and validation
-
-In a view, the application instantiates the Django form with `request.POST` and optionally `request.FILES`.
-
-On `POST`, calling `form.is_valid()` triggers Django's validation flow:
-
-1. raw request values are read from the widgets
-2. each field converts raw input into Python values
-3. `clean()` runs for cross-field validation
-4. errors are collected on the form and its bound fields
-
-For date fields, the raw values come through `TnaDateInputWidget.value_from_datadict()` and are then parsed in `TnaBaseDateField.to_python()`.
-
-### 12.5. Field-group rendering
-
-In the Jinja template, each field is rendered with `as_field_group()`.
-
-That is the main handoff into Django's field rendering API. Django uses the field's `template_name` to choose the correct field template for that bound field.
-
-For example:
-
-- `TnaCharField` uses the packaged text-input field template
-- `TnaRadioField` uses the packaged radios field template
-- `TnaDateField` uses the packaged date-input field template
-
-### 12.6. BoundField to TNA params mapping
-
-Each packaged field template is very small. Its job is to:
-
-1. import the matching TNA component macro
-2. call a helper such as `django_text_input_params(field)`
-3. pass the resulting params into the macro
-
-The helper layer is where Django's `BoundField` shape is converted into the parameter structure that the existing TNA macros expect.
-
-That conversion includes:
-
-- field ids and names
-- labels and hints
-- first error message
-- current selected or entered value
-- mapped choice items for radios, selects, and checkboxes
-- component overrides from `tna_params`
-
-### 12.7. Final macro rendering
-
-Once the params have been built, the existing TNA component macros render the final HTML.
-
-That means the Django layer does not reimplement TNA components. It only adapts Django form state into the same parameter contract already used elsewhere in the package.
-
-### 12.8. Error summary flow
-
-Field-level errors and form-level error summaries are handled separately.
-
-- field templates receive `params.error`, which lets the component render inline error text
-- page templates call `tnaErrorSummary(django_field_errors(form))`, which builds the top-of-page summary from `form.visible_fields()` and `form.non_field_errors()`
-
-This keeps business validation in Django and keeps rendering concerns in the helper and template layers.
-
-### 12.9. Conditional validation flow
-
-Conditional validation remains standard Django form logic.
-
-In the example app, `ConditionalExampleForm.clean()` adds errors to the dependent field using `add_error()`. Once Django has done that, the same rendering pipeline picks those errors up automatically in both the inline field error and the summary block.
-
-## 13. What to avoid
-
-- Avoid relying on widget templates alone for full component rendering.
-- Avoid mixing default Django field markup with TNA component markup in the same form.
-- Avoid model forms until you know they fit your service's validation and flow requirements.
-- Avoid assuming feature parity with the WTForms integration.
-
-## 14. Summary
-
-The core pattern is:
-
-1. use Jinja templates in Django
-2. enable `django.forms.renderers.TemplatesSetting`
-3. register `DjangoFormsHelpers` in the Jinja environment
-4. use the packaged TNA Django field classes or create your own field subclasses with custom `template_name` values
-5. render fields with `as_field_group()` so Django uses the field templates
-6. use `django_field_errors()` for the error summary
-
-That gives Django projects a similar developer experience to WTForms support while staying aligned with Django's own rendering model.
