@@ -116,6 +116,22 @@ pip install tna-frontend-jinja[wtforms]
 
 See the [TNA Frontend Jinja WTForms docs](https://nationalarchives.github.io/tna-frontend-jinja/wtforms/) for more information.
 
+## Django forms integration
+
+TNA Frontend Jinja can also be used to render Django forms with TNA components in projects that use the Django Jinja backend.
+
+```sh
+# Install with Poetry
+poetry add tna-frontend-jinja[django]
+
+# Install with pip
+pip install tna-frontend-jinja[django]
+```
+
+The package includes starter Django fields, date fields, helper registration for Jinja environments, and field templates that render TNA components. It requires Django 5.2 or later and does not yet have feature parity with the WTForms support.
+
+See the [TNA Frontend Jinja Django forms docs](https://nationalarchives.github.io/tna-frontend-jinja/django/) for more information.
+
 ## Running tests
 
 ```sh
