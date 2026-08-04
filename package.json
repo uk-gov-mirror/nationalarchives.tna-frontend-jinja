@@ -4,7 +4,7 @@
     "test:playwright": "npx playwright install && playwright test --ui"
   },
   "dependencies": {
-    "@nationalarchives/frontend": "1.1.0"
+    "@nationalarchives/frontend": "1.2.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
@@ -14,7 +14,7 @@
     "diff": "^9.0.0",
     "glob": "^13.0.0",
     "html-validate": "^11.0.0",
-    "js-beautify": "^1.14.8",
+    "js-beautify": "^2.0.3",
     "node-fetch": "^3.3.1"
   }
 }
